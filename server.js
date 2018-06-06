@@ -3,7 +3,7 @@
 const cluster = require('cluster')
 const http = require('http')
 const spawner = require('./spawner/spawner')
-const port = process.env.NODE_ENV === 'development' ? 8082 : 80
+const port = process.env.NODE_ENV === 'development' ? 8083 : 80
 
 const numCPUs = require('os').cpus().length
 
