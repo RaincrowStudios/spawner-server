@@ -1,25 +1,28 @@
 {
-  "name": "spawner-server",
+  "name": "spanwer-server",
   "version": "1.0.0",
   "description": "Spawner Server for the Raincrow Pantheon",
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "NODE_ENV=production node server.js",
+    "staging": "NODE_ENV=staging node server.js",
     "dev": "set NODE_ENV=development&& nodemon --trace-warnings server.js",
+    "devx": "NODE_ENV=development nodemon --trace-warnings server.js"
   },
   "author": "Sean Landis",
   "license": "SEE LICENSE IN LICENSE",
   "repository": "github:RaincrowStudios/spawner-server",
   "dependencies": {
+    "axios": "^0.18.0",
     "lured": "^1.0.1",
-    "npm": "^5.8.0",
+    "npm": "^6.1.0",
     "redis": "^2.8.0",
     "uuid": "^3.2.1"
   },
   "devDependencies": {
-    "eslint": "^4.18.1",
+    "eslint": "^4.19.1",
     "eslint-plugin-node": "^6.0.1",
-    "nodemon": "^1.15.1"
+    "nodemon": "^1.17.5"
   }
 }

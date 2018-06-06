@@ -2,8 +2,8 @@
 
 const cluster = require('cluster')
 const http = require('http')
-const subscriber = require('./redis/subscriber')
 const spawner = require('./spawner/spawner')
+const port = process.env.NODE_ENV === 'development' ? 8082 : 80
 
 const numCPUs = require('os').cpus().length
 
@@ -21,22 +21,20 @@ if (cluster.isMaster) {
   })
 }
 else {
-  subscriber()
-  const server = http.createServer().listen(8000)
+  const server = http.createServer().listen(port)
 
   server.on('request', function(req, res){
-    if(req.method === 'POST') {
-        req.on('data', function (data) {
-          console.log(process.pid)
-          manager(JSON.parse(data))
-          res.writeHead(200)
-          res.write(JSON.stringify(process.pid))
-          res.end()
-        })
+    if(req.method == 'POST') {
+      req.on('data', function (data) {
+        spawner(JSON.parse(data))
+        res.writeHead(200)
+        res.write('OK')
+        res.end()
+      })
     }
     else {
-      res.writeHead(405, {'Content-type':'application/json'})
-      res.write(JSON.stringify({error: "Method not allowed"}, 0, 4))
+      res.writeHead(405)
+      res.end()
     }
   })
 }

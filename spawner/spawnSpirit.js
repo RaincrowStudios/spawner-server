@@ -70,7 +70,7 @@ module.exports = (coords, constants) => {
         const instance = uuidv1()
         const spirit = await createWildSpirit(spiritId)
         const spanwCoords = generateSpawnCoords(coords, constants.spawnRadius)
-        console.log('here')
+
         await Promise.all([
           addObjectToHash(instance, spirit),
           addToActiveSet('spirits', instance),

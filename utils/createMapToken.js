@@ -1,9 +1,20 @@
 module.exports = (instance, info) => {
   let token
   switch (info.type) {
+    case 'location':
+      token = {
+        instance: instance,
+        type: info.type,
+        tier: info.tier,
+        latitude: info.latitude,
+        longitude: info.longitude,
+        physicalOnly: info.physicalOnly
+      }
+      break
     case 'portal':
       token = {
         instance: instance,
+        creator: info.ownerDisplay,
         type: info.type,
         subtype: info.tier > 0 ? 'greater' : 'lesser',
         degree: info.degree,
