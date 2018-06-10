@@ -1,6 +1,7 @@
 const spawnCollectible = require('./spawnCollectible')
 const spawnLocation = require('./spawnLocation')
 const spawnSpirit = require('./spawnSpirit')
+const getSpawnList = require('./components/getSpawnList')
 
 async function spawner(message) {
   try {
@@ -8,10 +9,14 @@ async function spawner(message) {
       await spawnLocation(message.latitude, message.longitude)
     }
     else if (message.event === 'move') {
-      await Promise.all([
-        spawnCollectible(message.latitude, message.longitude),
-        spawnSpirit(message.latitude, message.longitude)
-      ])
+      const spawnList = await getSpawnList(message.latitude, message.longitude)
+
+      if (spawnList) {
+        await Promise.all([
+          spawnCollectible(message.latitude, message.longitude, spawnList),
+          spawnSpirit(message.latitude, message.longitude, spawnList)
+        ])
+      }
     }
 
     return true

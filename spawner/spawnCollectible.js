@@ -1,4 +1,4 @@
-module.exports = (coords, constants) => {
+module.exports = (latitude, longitude, spawnList) => {
   return new Promise(async (resolve, reject) => {
     try {
 
