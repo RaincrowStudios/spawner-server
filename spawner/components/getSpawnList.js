@@ -19,9 +19,9 @@ module.exports = (latitude, longitude) => {
       if (country) {
         const code = country.address_components[0].short_name.toLowerCase()
         const spawnZone = await getOneFromList('countries', code)
-        if (spawnZone) {
-          const spawnList = await getOneFromList('zones', spawnZone.toString())
 
+        if (typeof spawnZone === 'number') {
+          const spawnList = await getOneFromList('zones', spawnZone.toString())
           resolve(spawnList)
         }
       }

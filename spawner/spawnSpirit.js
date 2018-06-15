@@ -3,7 +3,7 @@ const addObjectToHash = require('../redis/addObjectToHash')
 const addToActiveSet = require('../redis/addToActiveSet')
 const addToGeohash = require('../redis/addToGeohash')
 const getAllFromHash = require('../redis/getAllFromHash')
-const getEntriesFromList = require('../redis/getAllFromHash')
+const getEntriesFromList = require('../redis/getEntriesFromList')
 const getNearbyFromGeohash = require('../redis/getNearbyFromGeohash')
 const createMapToken = require('../utils/createMapToken')
 const informNearbyPlayers = require('../utils/informNearbyPlayers')
@@ -15,17 +15,16 @@ const generateSpawnCoords = require('./components/generateSpawnCoords')
 module.exports = (latitude, longitude, spawnList) => {
   return new Promise(async (resolve, reject) => {
     try {
-      const [spawnRadius, spiritDensity, spiritSpawnChance, spiritTierChance] =
+      const [spawnRadius, spiritSpawnChance, spiritDensity, spiritRarityChance] =
         await getEntriesFromList(
           'constants',
           [
             'spawnRadius',
-            'spiritDensity',
             'spiritSpawnChance',
-            'spiritTierChance'
+            'spiritDensity',
+            'spiritRarityChance'
           ]
         )
-
       const nearSpiritInstances = await getNearbyFromGeohash(
         'spirits',
         latitude,
@@ -70,12 +69,12 @@ module.exports = (latitude, longitude, spawnList) => {
       ) {
         let spiritId = false
         const spawnTierRoll = Math.random()
-        for (let i = spiritTierChance.length - 1; i > 0; i--) {
+        for (let i = spiritRarityChance.length - 1; i > 0; i--) {
           if (spiritId) {
             break
           }
 
-          if (spawnTierRoll <= spiritTierChance[i]) {
+          if (spawnTierRoll <= spiritRarityChance[i]) {
             if (spawnList.spirits[i - 1].length) {
               spiritId = await determineWildSpirit(
                 latitude,
@@ -87,10 +86,16 @@ module.exports = (latitude, longitude, spawnList) => {
         }
 
         if (spiritId) {
+          console.log(spiritId)
           const instance = uuidv1()
           const spirit = await createWildSpirit(spiritId)
           const spanwCoords =
             generateSpawnCoords(latitude, longitude, spawnRadius)
+
+          spirit.summonLat = spanwCoords[0]
+          spirit.summonLong = spanwCoords[1]
+          spirit.latitude = spanwCoords[0]
+          spirit.longitude = spanwCoords[1]
 
           await Promise.all([
             addObjectToHash(instance, spirit),
@@ -120,6 +125,7 @@ module.exports = (latitude, longitude, spawnList) => {
           ])
         }
       }
+
       resolve(true)
     }
     catch (err) {

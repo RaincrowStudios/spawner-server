@@ -3,6 +3,8 @@ const getOneFromHash = require('../../redis/getOneFromHash')
 module.exports = (spiritId) => {
   return new Promise (async (resolve, reject) => {
     try {
+      const currentTime = Date.now()
+
       const spiritTemplate = await getOneFromHash('list:spirits', spiritId)
 
       const spirit = {}
@@ -24,8 +26,6 @@ module.exports = (spiritId) => {
 
       spirit.tier = spiritTemplate.tier
 
-      spirit.duration = spiritTemplate.wild.duration
-
       spirit.drop = spiritTemplate.wild.drop
       spirit.bounty = spiritTemplate.wild.bounty
 
@@ -38,6 +38,41 @@ module.exports = (spiritId) => {
       spirit.lastAttackedBy = ''
       spirit.lastHealedBy = ''
       spirit.previousTarget = ''
+
+      spirit.createdOn = currentTime
+
+      spirit.expireOn = spiritTemplate.wild.duration > 0 ?
+        currentTime + (spiritTemplate.wild.duration * 3600000) : 0
+
+      let moveOn
+      if (spirit.moveFreq.includes('-')) {
+        const range = spirit.moveFreq.split('-')
+        const min = parseInt(range[0], 10)
+        const max = parseInt(range[1], 10)
+
+        moveOn = currentTime +
+          ((Math.floor(Math.random() * (max - min + 1)) + min) * 1000)
+      }
+      else {
+        moveOn = parseInt(spirit.moveFreq, 10)
+      }
+
+      spirit.moveOn = moveOn
+
+      let actionOn
+      if (spirit.moveFreq.includes('-')) {
+        const range = spirit.moveFreq.split('-')
+        const min = parseInt(range[0], 10)
+        const max = parseInt(range[1], 10)
+
+        actionOn = currentTime +
+          ((Math.floor(Math.random() * (max - min + 1)) + min) * 1000)
+      }
+      else {
+        actionOn = parseInt(spirit.moveFreq, 10)
+      }
+
+      spirit.actionOn = actionOn
 
       resolve(spirit)
     }
