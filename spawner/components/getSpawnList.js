@@ -1,5 +1,5 @@
 const axios = require('axios')
-const key = require('../../keys')
+const key = require('../../keys/keys')
 const getOneFromList = require('../../redis/getOneFromList')
 
 module.exports = (latitude, longitude) => {

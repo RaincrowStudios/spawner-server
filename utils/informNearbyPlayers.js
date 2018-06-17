@@ -1,4 +1,5 @@
 const getOneFromHash = require('../redis/getOneFromHash')
+const getOneFromList = require('../redis/getOneFromList')
 const getNearbyFromGeohash = require('../redis/getNearbyFromGeohash')
 const informPlayers = require('./informPlayers')
 
@@ -10,7 +11,7 @@ module.exports = (latitude, longitude, message, exclude = []) => {
       }
 
       const displayRadius =
-        await getOneFromHash('list:constants', 'displayRadius')
+        await getOneFromList('constants', 'displayRadius')
 
       const nearCharacters = await getNearbyFromGeohash(
         'characters',

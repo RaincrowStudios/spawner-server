@@ -1,10 +1,10 @@
-const uuidv1 = require('uuid/v1')
 const addObjectToHash = require('../redis/addObjectToHash')
 const addToActiveSet = require('../redis/addToActiveSet')
 const addToGeohash = require('../redis/addToGeohash')
 const getAllFromHash = require('../redis/getAllFromHash')
 const getEntriesFromList = require('../redis/getEntriesFromList')
 const getNearbyFromGeohash = require('../redis/getNearbyFromGeohash')
+const createInstanceId = require('../utils/createInstanceId')
 const createMapToken = require('../utils/createMapToken')
 const informNearbyPlayers = require('../utils/informNearbyPlayers')
 const informManager = require('../utils/informManager')
@@ -86,8 +86,7 @@ module.exports = (latitude, longitude, spawnList) => {
         }
 
         if (spiritId) {
-          console.log(spiritId)
-          const instance = uuidv1()
+          const instance = createInstanceId()
           const spirit = await createWildSpirit(spiritId)
           const spanwCoords =
             generateSpawnCoords(latitude, longitude, spawnRadius)

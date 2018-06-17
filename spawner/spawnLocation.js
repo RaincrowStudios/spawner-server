@@ -1,11 +1,11 @@
 const axios = require('axios')
-const uuidv1 = require('uuid/v1')
-const key = require('../keys')
+const key = require('../keys/keys')
 const addObjectToHash = require('../redis/addObjectToHash')
 const addToGeohash = require('../redis/addToGeohash')
 const addToActiveSet = require('../redis/addToActiveSet')
 const getEntriesFromList = require('../redis/getEntriesFromList')
 const getOneFromHash = require('../redis/getOneFromHash')
+const createInstanceId = require('../utils/createMapToken')
 const createMapToken = require('../utils/createMapToken')
 const informManager = require('../utils/informManager')
 const informNearbyPlayers = require('../utils/informNearbyPlayers')
@@ -92,7 +92,7 @@ module.exports = (latitude, longitude) => {
         }
 
         if (location) {
-          const instance = uuidv1()
+          const instance = createInstanceId()
           const newLocation = createLocation(
             instance,
             location.name,
