@@ -6,6 +6,7 @@ module.exports = (instance, name, tier, latitude, longitude, chance) => {
   const location = newLocation
 
   location.instance = instance
+  location.type = 'location'
   location.displayName = name
   location.createdOn = currentTime
   location.expiresOn = currentTime + (86400000 * 3 * tier)

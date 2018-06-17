@@ -1,5 +1,6 @@
 module.exports = (instance, info) => {
   let token
+
   switch (info.type) {
     case 'location':
       token = {

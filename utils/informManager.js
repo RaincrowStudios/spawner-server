@@ -1,12 +1,17 @@
+const sockets = require('../database/sockets')
 const publishToChannel = require('../redis/publishToChannel')
-const managerClient = require('./managerClient')
+const createManagerClient = require('./createManagerClient')
 
 module.exports = (message) => {
   return new Promise(async (resolve, reject) => {
     try {
       if (message.command === 'add' || message.command === 'death') {
-        managerClient.write(JSON.stringify(message))
-        managerClient.end()
+        const manager = sockets.by('type', 'manager')
+        if (!manager.socket.writable) {
+          sockets.remove(manager)
+          await createManagerClient(message)
+        }
+        manager.socket.write(JSON.stringify(message))
       }
       else {
         await publishToChannel('manager', message)
@@ -14,6 +19,7 @@ module.exports = (message) => {
       resolve(true)
     }
     catch (err) {
+      console.error(err)
       reject(err)
     }
   })

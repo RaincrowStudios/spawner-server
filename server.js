@@ -1,8 +1,20 @@
 'use strict'
 
 const net = require('net')
+const createRedisClients = require('./redis/createRedisClients')
 const spawner = require('./spawner/spawner')
+const createManagerClient = require('./utils/createManagerClient')
 const port = process.env.NODE_ENV === 'development' ? 8083 : 80
+
+async function startup() {
+  console.log('Starting Spawner...')
+  await Promise.all([
+    createRedisClients(),
+    createManagerClient(),
+  ])
+}
+
+startup()
 
 const server = net.createServer(socket => {
   socket.on('data', data => {
