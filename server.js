@@ -6,12 +6,10 @@ const port = process.env.NODE_ENV === 'development' ? 8083 : 80
 
 const server = net.createServer(socket => {
   socket.on('data', data => {
-    console.log('data recieved')
-    //manager(JSON.parse(data))
+    spawner(JSON.parse(data))
   })
 
   socket.on('error', err => {
-    console.log('ERRROR')
     console.error(err)
   })
 })
