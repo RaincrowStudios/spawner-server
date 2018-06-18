@@ -1,4 +1,5 @@
 const net = require('net')
+const production = require('../config/production')
 const ips = require('../config/region-ips')
 const sockets = require('../database/sockets')
 
@@ -10,10 +11,11 @@ module.exports = (message = '') => {
         process.env.INSTANCE_REGION.split('/').pop().slice(0, -2)
 
       const manager = new net.Socket()
-      const port = process.env.NODE_ENV === 'development' ? 8082 : 8080
+      const port = process.env.NODE_ENV === 'development' ?
+        8082 : production.port
+
       const host = process.env.NODE_ENV === 'development' ?
-        'localhost' :
-        '10.' + ips[region] + '2.255'
+        'localhost' : ips[region] + production.managerAddress
 
       manager.connect(port, host, () => {
         sockets.insert({socket: manager, type: 'manager'})

@@ -1,10 +1,11 @@
 'use strict'
 
 const net = require('net')
+const production = require('./config/production')
 const createRedisClients = require('./redis/createRedisClients')
 const spawner = require('./spawner/spawner')
 const createManagerClient = require('./utils/createManagerClient')
-const port = process.env.NODE_ENV === 'development' ? 8083 : 8080
+const port = process.env.NODE_ENV === 'development' ? 8083 : production.port
 
 async function startup() {
   console.log('Starting Spawner...')

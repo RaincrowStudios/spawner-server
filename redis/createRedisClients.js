@@ -1,7 +1,10 @@
+const lured = require('lured')
 const ping = require('ping')
 const redis = require('redis')
-const ips = require('../config/region-ips')
+const production = require('../config/production')
 const clients = require('../database/clients')
+const ips = require('../config/region-ips')
+const scripts = require('../lua/scripts')
 
 module.exports = () => {
   return new Promise((resolve, reject) => {
@@ -14,17 +17,27 @@ module.exports = () => {
 
         client.on('ready', () => {
           clients.insert({region: 'local', client: client})
+          const luredClient = lured.create(client, scripts)
+          luredClient.load(err => {
+            if (err) {
+              //contact admin
+              throw new Error(err)
+            }
+            else {
+              resolve(true)
+            }
+          })
         })
 
         client.on('error', (err) => {
           const clientToRemove = clients.by('client', client)
           clients.remove(clientToRemove)
-          console.error(err)
+          throw new Error(err)
         })
       }
       else {
         Object.keys(ips).forEach(region => {
-          const host = '10.' + ips[region] + '.1.255'
+          const host = ips[region] + production.redisAddress
           ping.sys.probe(host, (isAlive) => {
             if (isAlive) {
               const client = redis.createClient(
@@ -34,18 +47,25 @@ module.exports = () => {
 
               client.on('ready', () => {
                 clients.insert({region: region, client: client})
+                const luredClient = lured.create(client, scripts)
+                luredClient.load(err => {
+                  if (err) {
+                    //contact admin
+                    throw new Error(err)
+                  }
+                })
               })
 
               client.on('error', (err) => {
                 const clientToRemove = clients.by('client', client)
                 clients.remove(clientToRemove)
-                console.error(err)
+                throw new Error(err)
               })
             }
           })
         })
+        resolve(true)
       }
-      resolve(true)
     }
     catch (err) {
       reject(err)
