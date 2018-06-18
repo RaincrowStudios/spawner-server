@@ -4,7 +4,7 @@ const net = require('net')
 const createRedisClients = require('./redis/createRedisClients')
 const spawner = require('./spawner/spawner')
 const createManagerClient = require('./utils/createManagerClient')
-const port = process.env.NODE_ENV === 'development' ? 8083 : 80
+const port = process.env.NODE_ENV === 'development' ? 8083 : 8080
 
 async function startup() {
   console.log('Starting Spawner...')
