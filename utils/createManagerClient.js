@@ -10,7 +10,7 @@ module.exports = (message = '') => {
         process.env.INSTANCE_REGION.split('/').pop().slice(0, -2)
 
       const manager = new net.Socket()
-      const port = process.env.NODE_ENV === 'development' ? 8082 : 80
+      const port = process.env.NODE_ENV === 'development' ? 8082 : 8080
       const host = process.env.NODE_ENV === 'development' ?
         'localhost' :
         '10.' + ips[region] + '2.255'
