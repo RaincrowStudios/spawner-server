@@ -1,10 +1,8 @@
-const lured = require('lured')
 const ping = require('ping')
 const redis = require('redis')
 const production = require('../config/production')
 const clients = require('../database/clients')
 const ips = require('../config/region-ips')
-const scripts = require('../lua/scripts')
 
 module.exports = () => {
   return new Promise((resolve, reject) => {
@@ -17,16 +15,7 @@ module.exports = () => {
 
         client.on('ready', () => {
           clients.insert({region: 'local', client: client})
-          const luredClient = lured.create(client, scripts)
-          luredClient.load(err => {
-            if (err) {
-              //contact admin
-              throw new Error(err)
-            }
-            else {
-              resolve(true)
-            }
-          })
+          resolve(true)
         })
 
         client.on('error', (err) => {
@@ -47,13 +36,6 @@ module.exports = () => {
 
               client.on('ready', () => {
                 clients.insert({region: region, client: client})
-                const luredClient = lured.create(client, scripts)
-                luredClient.load(err => {
-                  if (err) {
-                    //contact admin
-                    throw new Error(err)
-                  }
-                })
               })
 
               client.on('error', (err) => {
