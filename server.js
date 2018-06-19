@@ -8,7 +8,7 @@ const createManagerClient = require('./utils/createManagerClient')
 const port = process.env.NODE_ENV === 'development' ? 8083 : production.port
 
 async function startup() {
-  console.log('Starting Spawner...')
+  console.log('Starting spawner server...')
   await Promise.all([
     createRedisClients(),
     createManagerClient(),
@@ -27,7 +27,9 @@ const server = net.createServer(socket => {
   })
 })
 
-server.listen(port)
+server.listen(port, () => {
+  console.log('Spawner server started.')
+})
 
 process.on('unhandledRejection', (reason, location) => {
   console.error('Unhandled Rejection at:', location, 'reason:', reason)
