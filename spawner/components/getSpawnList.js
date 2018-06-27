@@ -20,7 +20,7 @@ module.exports = (latitude, longitude) => {
         const code = country.address_components[0].short_name.toLowerCase()
         const spawnZone = await getOneFromList('countries', code)
 
-        if (typeof spawnZone === 'number') {
+        if (typeof spawnZone === 'number' && !isNaN(spawnZone)) {
           const spawnList = await getOneFromList('zones', spawnZone.toString())
           resolve(spawnList)
         }
