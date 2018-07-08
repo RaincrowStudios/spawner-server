@@ -19,7 +19,7 @@ module.exports = (latitude, longitude) => {
         resolve([true, nearLocations])
       }
       else if (
-        nearCharacters.length/nearLocations.length < charactersPerLocation
+        nearCharacters.length/nearLocations.length > charactersPerLocation
       ) {
         resolve([true, nearLocations])
       }
