@@ -88,13 +88,13 @@ module.exports = (latitude, longitude, spawnList) => {
         if (spiritId) {
           const instance = createInstanceId()
           const spirit = await createWildSpirit(spiritId)
-          const spanwCoords =
+          const spawnCoords =
             generateSpawnCoords(latitude, longitude, spawnRadius)
 
-          spirit.summonLat = spanwCoords[0]
-          spirit.summonLong = spanwCoords[1]
-          spirit.latitude = spanwCoords[0]
-          spirit.longitude = spanwCoords[1]
+          spirit.summonLat = spawnCoords[0]
+          spirit.summonLong = spawnCoords[1]
+          spirit.latitude = spawnCoords[0]
+          spirit.longitude = spawnCoords[1]
 
           await Promise.all([
             addObjectToHash(instance, spirit),
@@ -102,8 +102,8 @@ module.exports = (latitude, longitude, spawnList) => {
             addToGeohash(
               'spirits',
               instance,
-              spanwCoords[0],
-              spanwCoords[1]
+              spawnCoords[0],
+              spawnCoords[1]
             ),
             informManager(
               {
@@ -114,10 +114,10 @@ module.exports = (latitude, longitude, spawnList) => {
               }
             ),
             informNearbyPlayers(
-              spanwCoords[0],
-              spanwCoords[1],
+              spawnCoords[0],
+              spawnCoords[1],
               {
-                command: 'map_spirit_add',
+                command: 'map_token_add',
                 token: createMapToken(instance, spirit)
               }
             )

@@ -87,14 +87,14 @@ module.exports = (latitude, longitude, spawnList) => {
 
           if (collectibleId) {
             const instance = createInstanceId()
-            const spanwCoords =
+            const spawnCoords =
               generateSpawnCoords(latitude, longitude, spawnRadius)
 
             const collectible = {
               id: collectibleId,
               type: types[i],
-              latitude: spanwCoords[0],
-              longitude: spanwCoords[1]
+              latitude: spawnCoords[0],
+              longitude: spawnCoords[1]
             }
 
             await Promise.all([
@@ -103,8 +103,8 @@ module.exports = (latitude, longitude, spawnList) => {
               addToGeohash(
                 'collectibles',
                 instance,
-                spanwCoords[0],
-                spanwCoords[1]
+                spawnCoords[0],
+                spawnCoords[1]
               ),
               informManager(
                 {
@@ -115,10 +115,10 @@ module.exports = (latitude, longitude, spawnList) => {
                 }
               ),
               informNearbyPlayers(
-                spanwCoords[0],
-                spanwCoords[1],
+                spawnCoords[0],
+                spawnCoords[1],
                 {
-                  command: 'map_collectible_add',
+                  command: 'map_token_add',
                   token: createMapToken(instance, collectible)
                 }
               )
