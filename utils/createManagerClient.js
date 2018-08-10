@@ -19,6 +19,9 @@ module.exports = (message = '') => {
 
       manager.connect(port, host, () => {
         sockets.insert({socket: manager, type: 'manager'})
+        if (message) {
+          manager.write(JSON.stringify(message))
+        }
         resolve(true)
       })
 
@@ -26,9 +29,6 @@ module.exports = (message = '') => {
         console.error(err)
       })
 
-      if (message) {
-        manager.write(JSON.stringify(message))
-      }
     }
     catch (err) {
       console.error(err)
