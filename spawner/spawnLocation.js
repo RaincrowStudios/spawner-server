@@ -5,7 +5,6 @@ const addToGeohash = require('../redis/addToGeohash')
 const addToActiveSet = require('../redis/addToActiveSet')
 const getEntriesFromList = require('../redis/getEntriesFromList')
 const getOneFromHash = require('../redis/getOneFromHash')
-const createInstanceId = require('../utils/createInstanceId')
 const createMapToken = require('../utils/createMapToken')
 const informManager = require('../utils/informManager')
 const informNearbyPlayers = require('../utils/informNearbyPlayers')
@@ -92,9 +91,7 @@ module.exports = (latitude, longitude) => {
         }
 
         if (location) {
-          const instance = createInstanceId()
           const newLocation = createLocation(
-            instance,
             location.name,
             tier,
             location.geometry.location.lat,
@@ -103,19 +100,19 @@ module.exports = (latitude, longitude) => {
           )
 
           await Promise.all([
-            addObjectToHash(instance, newLocation),
+            addObjectToHash(newLocation.instance, newLocation),
             addToGeohash(
               'locations',
-              instance,
+              newLocation.instance,
               newLocation.latitude,
               newLocation.longitude
             ),
-            addToActiveSet('locations', instance),
+            addToActiveSet('locations', newLocation.instance),
             informManager(
               {
                 command: 'add',
                 type: 'location',
-                instance: instance,
+                instance: newLocation.instance,
                 location: newLocation
               }
             ),
@@ -124,7 +121,7 @@ module.exports = (latitude, longitude) => {
               newLocation.longitude,
               {
                 command: 'map_location_add',
-                token: createMapToken(instance, newLocation)
+                token: createMapToken(newLocation)
               }
             )
           ])

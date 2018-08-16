@@ -1,75 +1,68 @@
-const getOneFromHash = require('../../redis/getOneFromHash')
+const getOneFromList = require('../../redis/getOneFromList')
+const createInstanceId = require('../../utils/createInstanceId')
+const determineWildSpiritEnergy = require('./determineWildSpiritEnergy')
 
 module.exports = (spiritId) => {
   return new Promise (async (resolve, reject) => {
     try {
       const currentTime = Date.now()
 
-      const spiritTemplate = await getOneFromHash('list:spirits', spiritId)
+      const spiritTemplate = await getOneFromList('spirits', spiritId)
 
-      const spirit = {}
-      spirit.id = spiritTemplate.id
+      const spirit = {
+        instance: createInstanceId(),
+        id: spiritTemplate.id,
+        degree: spiritTemplate.wild.degree,
+        baseEnergy: determineWildSpiritEnergy(spiritTemplate),
+        power: spiritTemplate.wild.power,
+        focus: spiritTemplate.wild.focus,
+        ward: spiritTemplate.wild.ward,
+        resilience: spiritTemplate.wild.resilience,
+        type: spiritTemplate.type,
+        tier: spiritTemplate.tier,
+        owner: '',
+        ownerDisplay: '',
+        coven: '',
+        player: '',
+        conditions: {},
+        carrying: [],
+        lastAttackedBy: '',
+        lastHealedBy: '',
+        previousTarget: '',
+        createdOn: currentTime,
+        expiresOn: spiritTemplate.wild.duration > 0 ?
+          currentTime + (spiritTemplate.wild.duration * 3600000) : 0
+      }
 
-      spirit.degree = spiritTemplate.wild.degree
-
-      spirit.baseEnergy = spiritTemplate.wild.energy
-
-      spirit.energy = spiritTemplate.wild.energy
-
-      spirit.power = spiritTemplate.wild.power
-
-      spirit.resilience = spiritTemplate.wild.resilience
-
-      spirit.reach = spiritTemplate.wild.reach
-
-      spirit.type = spiritTemplate.type
-
-      spirit.tier = spiritTemplate.tier
-
-      spirit.drop = spiritTemplate.wild.drop
-      spirit.bounty = spiritTemplate.wild.bounty
-
-      spirit.owner = ''
-      spirit.ownerDisplay = ''
-      spirit.coven = ''
-      spirit.player = ''
-      spirit.conditions = []
-      spirit.carrying = []
-      spirit.lastAttackedBy = ''
-      spirit.lastHealedBy = ''
-      spirit.previousTarget = ''
-
-      spirit.createdOn = currentTime
-
-      spirit.expireOn = spiritTemplate.wild.duration > 0 ?
-        currentTime + (spiritTemplate.wild.duration * 3600000) : 0
+      spirit.energy = spirit.baseEnergy
 
       let moveOn
-      if (spirit.moveFreq.includes('-')) {
-        const range = spirit.moveFreq.split('-')
-        const min = parseInt(range[0], 10)
-        const max = parseInt(range[1], 10)
+      if (spiritTemplate.moveFreq.includes('-')) {
+        const [min, max] = spiritTemplate.moveFreq.split('-')
 
-        moveOn = currentTime +
-          ((Math.floor(Math.random() * (max - min + 1)) + min) * 1000)
+        moveOn = currentTime + (
+          (Math.floor(
+            Math.random() * (parseInt(max, 10) - parseInt(min, 10) + 1)
+          ) + parseInt(min, 10)) * 1000
+        )
       }
       else {
-        moveOn = parseInt(spirit.moveFreq, 10)
+        moveOn = parseInt(spiritTemplate.moveFreq, 10)
       }
 
       spirit.moveOn = moveOn
 
       let actionOn
-      if (spirit.moveFreq.includes('-')) {
-        const range = spirit.moveFreq.split('-')
-        const min = parseInt(range[0], 10)
-        const max = parseInt(range[1], 10)
+      if (spiritTemplate.actionFreq.includes('-')) {
+        const [min, max] = spiritTemplate.actionFreq.split('-')
 
         actionOn = currentTime +
-          ((Math.floor(Math.random() * (max - min + 1)) + min) * 1000)
+          (Math.floor(
+            Math.random() * (parseInt(max, 10) - parseInt(min, 10) + 1)
+          ) + parseInt(min, 10)) * 1000
       }
       else {
-        actionOn = parseInt(spirit.moveFreq, 10)
+        actionOn = parseInt(spiritTemplate.actionFreq, 10)
       }
 
       spirit.actionOn = actionOn

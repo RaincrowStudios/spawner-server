@@ -86,11 +86,11 @@ module.exports = (latitude, longitude, spawnList) => {
           }
 
           if (collectibleId) {
-            const instance = createInstanceId()
             const spawnCoords =
               generateSpawnCoords(latitude, longitude, spawnRadius)
 
             const collectible = {
+              instance: createInstanceId(),
               id: collectibleId,
               type: types[i],
               latitude: spawnCoords[0],
@@ -98,11 +98,11 @@ module.exports = (latitude, longitude, spawnList) => {
             }
 
             await Promise.all([
-              addObjectToHash(instance, collectible),
-              addToActiveSet('collectibles', instance),
+              addObjectToHash(collectible.instance, collectible),
+              addToActiveSet('collectibles', collectible.instance),
               addToGeohash(
                 'collectibles',
-                instance,
+                collectible.instance,
                 spawnCoords[0],
                 spawnCoords[1]
               ),
@@ -110,7 +110,7 @@ module.exports = (latitude, longitude, spawnList) => {
                 {
                   command: 'add',
                   type: 'collectible',
-                  instance: instance,
+                  instance: collectible.instance,
                   collectible: collectible
                 }
               ),
@@ -119,7 +119,7 @@ module.exports = (latitude, longitude, spawnList) => {
                 spawnCoords[1],
                 {
                   command: 'map_token_add',
-                  token: createMapToken(instance, collectible)
+                  token: createMapToken(collectible)
                 }
               )
             ])
