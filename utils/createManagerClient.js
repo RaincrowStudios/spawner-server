@@ -25,13 +25,19 @@ module.exports = (message = '') => {
         resolve(true)
       })
 
-      manager.on('error', (err) => {
-        console.error(err)
+      manager.on('error', err => {
+        if (err.code === 'ECONNRESET') {
+          manager.connect(port, host, () => {
+            sockets.insert({socket: manager, type: 'manager'})
+            if (message) {
+              manager.write(JSON.stringify(message))
+            }
+            resolve(true)
+          })
+        }
       })
-
     }
     catch (err) {
-      console.error(err)
       reject(err)
     }
   })

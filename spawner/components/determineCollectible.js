@@ -3,9 +3,9 @@ module.exports = (latitude, longitude, collectibles) => {
     try {
       const validCollectibles = collectibles
       if (validCollectibles.length) {
-        const collectibleId =
-          validCollectibles[Math.floor(Math.random) * validCollectibles.length]
-        resolve(collectibleId)
+        const collectible =
+          validCollectibles[Math.floor(Math.random()) * validCollectibles.length]
+        resolve(collectible.id)
       }
       else {
         resolve(false)
