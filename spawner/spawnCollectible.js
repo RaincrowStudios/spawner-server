@@ -68,12 +68,14 @@ module.exports = (latitude, longitude, spawnList) => {
           (collectibleSpawnChance[i] + spawnList.collectibleSpawnChanceModifier)
         ) {
           let collectibleId = false
+          let weight = 0
           const spawnTierRoll = Math.random()
           for (let j = collectibleRarityChance.length - 1; j >= 0; j--) {
+            weight += collectibleRarityChance[j]
             if (collectibleId) {
               break
             }
-            if (spawnTierRoll <= collectibleRarityChance[j]) {
+            if (spawnTierRoll <= weight) {
               if (spawnList[types[i] + 's'][j].length) {
                 collectibleId = await determineCollectible(
                   latitude,
