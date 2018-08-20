@@ -10,8 +10,8 @@ module.exports = {
   controlledBy: '',
   highOffer: 0,
   slots: 0,
-  occupants: [],
+  occupants: {},
   spiritSlots: 0,
-  spirits: [],
-  offerings: []
+  spirits: {},
+  offerings: {}
 }
