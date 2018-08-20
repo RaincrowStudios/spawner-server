@@ -7,6 +7,7 @@ const getEntriesFromList = require('../redis/getEntriesFromList')
 const getOneFromHash = require('../redis/getOneFromHash')
 const createMapToken = require('../utils/createMapToken')
 const informManager = require('../utils/informManager')
+const informLogger = require('../utils/informLogger')
 const informNearbyPlayers = require('../utils/informNearbyPlayers')
 const checkSpawnLocation = require('./components/checkSpawnLocation')
 const createLocation = require('./components/createLocation')
@@ -127,6 +128,15 @@ module.exports = (latitude, longitude) => {
           ])
         }
       }
+      
+      informLogger({
+        route: 'popCreation',
+       	pop_id: newLocation.instance,
+        latitude: newLocation.latitude,
+        longitude: newLocation.longitude,
+        tier: newLocation.tier 
+      })
+      
       resolve(true)
     }
     catch (err) {
