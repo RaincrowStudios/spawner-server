@@ -18,6 +18,12 @@ module.exports = (message = '') => {
         'localhost' : ips[region] + production.managerAddress
 
       manager.connect(port, host, () => {
+        const managerSocket = sockets.by('type', 'manager')
+
+        if (managerSocket) {
+          sockets.remove(managerSocket)
+        }
+
         sockets.insert({socket: manager, type: 'manager'})
         if (message) {
           manager.write(JSON.stringify(message))
@@ -28,6 +34,12 @@ module.exports = (message = '') => {
       manager.on('error', err => {
         if (err.code === 'ECONNRESET') {
           manager.connect(port, host, () => {
+            const managerSocket = sockets.by('type', 'manager')
+
+            if (managerSocket) {
+              sockets.remove(managerSocket)
+            }
+
             sockets.insert({socket: manager, type: 'manager'})
             if (message) {
               manager.write(JSON.stringify(message))
