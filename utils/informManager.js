@@ -7,9 +7,8 @@ module.exports = (message) => {
     try {
       if (message.command === 'add' || message.command === 'death') {
         const manager = sockets.by('type', 'manager')
-        
+
         if (!manager || !manager.socket.writable) {
-          sockets.remove(manager)
           await createManagerClient(message)
         }
         manager.socket.write(JSON.stringify(message))
