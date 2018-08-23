@@ -126,16 +126,17 @@ module.exports = (latitude, longitude) => {
               }
             )
           ])
+
+          informLogger({
+            route: 'popCreation',
+            pop_id: newLocation.instance,
+            latitude: newLocation.latitude,
+            longitude: newLocation.longitude,
+            tier: newLocation.tier 
+          })
         }
       }
       
-      informLogger({
-        route: 'popCreation',
-       	pop_id: newLocation.instance,
-        latitude: newLocation.latitude,
-        longitude: newLocation.longitude,
-        tier: newLocation.tier 
-      })
       
       resolve(true)
     }
