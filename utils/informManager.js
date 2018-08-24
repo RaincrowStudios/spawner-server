@@ -11,7 +11,9 @@ module.exports = (message) => {
         if (!manager || !manager.socket.writable) {
           await createManagerClient(message)
         }
-        manager.socket.write(JSON.stringify(message))
+        const messageString = JSON.stringify(message)
+        //appending '$%$%' as message termination to avoid issue with TCP batching
+        manager.socket.write(messageString + '$%$%')
       }
       else {
         await publishToChannel('manager', message)

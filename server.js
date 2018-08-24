@@ -19,7 +19,11 @@ startup()
 
 const server = net.createServer(socket => {
   socket.on('data', data => {
-    spawner(JSON.parse(data))
+    const messages = data.toString().split('$%$%').filter(message => message)
+    
+    for (const message of messages) {
+      spawner(JSON.parse(message))
+    }
   })
 
   socket.on('error', err => {
