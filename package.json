@@ -6,8 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "INSTANCE_REGION=$(curl -s 'http://metadata.google.internal/computeMetadata/v1/instance/zone' -H 'Metadata-Flavor: Google') NODE_ENV=production node server.js",
-    "dev": "set NODE_ENV=development&& set INSTANCE_REGION=local&& nodemon --trace-warnings server.js",
-    "devx": "NODE_ENV=development INSTANCE_REGION=local nodemon --trace-warnings server.js"
+    "local": "cross-env NODE_ENV=development INSTANCE_REGION=local nodemon --trace-warnings server.js"
   },
   "author": "Sean Landis",
   "license": "SEE LICENSE IN LICENSE",
@@ -20,6 +19,7 @@
     "uuid": "^3.2.1"
   },
   "devDependencies": {
+    "cross-env": "^5.2.0",
     "eslint": "^4.19.1",
     "eslint-plugin-node": "^6.0.1",
     "nodemon": "^1.17.5"
