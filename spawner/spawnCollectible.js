@@ -4,6 +4,7 @@ const addToGeohash = require('../redis/addToGeohash')
 const getAllFromHash = require('../redis/getAllFromHash')
 const getEntriesFromList = require('../redis/getEntriesFromList')
 const getNearbyFromGeohash = require('../redis/getNearbyFromGeohash')
+const getOneFromList = require('../redis/getOneFromList')
 const createInstanceId = require('../utils/createInstanceId')
 const createMapToken = require('../utils/createMapToken')
 const informNearbyPlayers = require('../utils/informNearbyPlayers')
@@ -29,44 +30,49 @@ module.exports = (latitude, longitude, spawnList) => {
           ]
         )
 
-      const nearCollectibleInstances = await getNearbyFromGeohash(
-        'collectible',
+      const nearInstances = await getNearbyFromGeohash(
+        'collectibles',
         latitude,
         longitude,
         spawnRadius
       )
 
+      const collectibleInstances = await Promise.all(
+        nearInstances.map(instance => getAllFromHash(instance))
+      )
+
       const collectibles = await Promise.all(
-        nearCollectibleInstances.map(instance => getAllFromHash(instance))
+        collectibleInstances
+          .map(collectible => getOneFromList('collectibles', collectible.id))
       )
 
       const types = ['herb', 'tool', 'gem']
       for (let i = 0; i < types.length; i++) {
         const rarityFour = collectibles
-          .filter(collectible => collectible.rarity === 4)
+          .filter(collectible => collectible.rarity === 4).length
 
-        if (rarityFour.length >= collectibleDensity[3]) {
+        if (rarityFour >= collectibleDensity[3]) {
           continue
         }
 
         const rarityThree = collectibles
-          .filter(collectible => collectible.rarity === 3)
+          .filter(collectible => collectible.rarity === 3).length
 
-        if (rarityThree.length >= collectibleDensity[2]) {
+        if (rarityThree >= collectibleDensity[2]) {
           continue
         }
 
         const rarityTwo = collectibles
-          .filter(collectible => collectible.rarity === 2)
+          .filter(collectible => collectible.rarity === 2).length
 
-        if (rarityTwo.length >= collectibleDensity[1]) {
+        if (rarityTwo >= collectibleDensity[1]) {
           continue
         }
 
         const rarityOne = collectibles
-          .filter(collectible => collectible.rarity === 1)
+          .filter(collectible => collectible.rarity === 1).length
 
-        if (rarityOne.length >= collectibleDensity[0]) {
+        if (rarityOne >= collectibleDensity[0]) {
           continue
         }
 

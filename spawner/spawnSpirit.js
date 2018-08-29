@@ -63,23 +63,24 @@ module.exports = (latitude, longitude, spawnList) => {
         }
       }
 
+      const spawnRoll = Math.random()
       if (
-        Math.random() <=
-        (spiritSpawnChance + spawnList.spiritSpawnChanceModifier)
+        spawnRoll <= (spiritSpawnChance + spawnList.spiritSpawnChanceModifier)
       ) {
         let spiritId = false
         const spawnTierRoll = Math.random()
-        for (let i = spiritRarityChance.length - 1; i > 0; i--) {
+
+        for (let i = spiritRarityChance.length - 1; i >= 0; i--) {
           if (spiritId) {
             break
           }
 
           if (spawnTierRoll <= spiritRarityChance[i]) {
-            if (spawnList.spirits[i - 1].length) {
+            if (spawnList.spirits[i].length) {
               spiritId = await determineWildSpirit(
                 latitude,
                 longitude,
-                spawnList.spirits[i - 1]
+                spawnList.spirits[i]
               )
             }
           }

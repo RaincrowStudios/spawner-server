@@ -18,7 +18,7 @@ async function spawner(message) {
       if (spawnList) {
         await Promise.all([
           spawnCollectible(message.latitude, message.longitude, spawnList),
-          spawnSpirit(message.latitude, message.longitude, spawnList)
+          //spawnSpirit(message.latitude, message.longitude, spawnList)
         ])
       }
     }

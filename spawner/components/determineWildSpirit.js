@@ -4,7 +4,7 @@ module.exports = (latitude, longitude, spirits) => {
       const validSpirits = spirits
       if (validSpirits.length) {
         const spiritId =
-          validSpirits[Math.floor(Math.random) * validSpirits.length]
+          validSpirits[Math.floor(Math.random()) * validSpirits.length].id
         resolve(spiritId)
       }
       else {
