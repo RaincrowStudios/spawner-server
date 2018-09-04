@@ -12,6 +12,7 @@
   "license": "SEE LICENSE IN LICENSE",
   "repository": "github:RaincrowStudios/spawner-server",
   "dependencies": {
+    "@mapbox/mapbox-sdk": "^0.4.1",
     "axios": "^0.18.0",
     "lokijs": "^1.5.5",
     "ping": "^0.2.2",

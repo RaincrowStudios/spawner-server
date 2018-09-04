@@ -15,14 +15,14 @@ const generateSpawnCoords = require('./components/generateSpawnCoords')
 module.exports = (latitude, longitude, spawnList) => {
   return new Promise(async (resolve, reject) => {
     try {
-      const [spawnRadius, spiritSpawnChance, spiritDensity, spiritRarityChance] =
+      const [spawnRadius, spiritSpawnChance, spiritDensity, spiritTierChance] =
         await getEntriesFromList(
           'constants',
           [
             'spawnRadius',
             'spiritSpawnChance',
             'spiritDensity',
-            'spiritRarityChance'
+            'spiritTierChance'
           ]
         )
       const nearSpiritInstances = await getNearbyFromGeohash(
@@ -38,27 +38,22 @@ module.exports = (latitude, longitude, spawnList) => {
         )
 
         const tierFour = spirits.filter(spirit => spirit.tier === 4)
-        if (tierFour.length >= spiritDensity[4]) {
+        if (tierFour.length >= spiritDensity[3]) {
           resolve(true)
         }
 
         const tierThree = spirits.filter(spirit => spirit.tier === 3)
-        if (tierThree.length >= spiritDensity[3]) {
+        if (tierThree.length >= spiritDensity[2]) {
           resolve(true)
         }
 
         const tierTwo = spirits.filter(spirit => spirit.tier === 2)
-        if (tierTwo.length >= spiritDensity[2]) {
+        if (tierTwo.length >= spiritDensity[1]) {
           resolve(true)
         }
 
         const tierOne = spirits.filter(spirit => spirit.tier === 1)
-        if (tierOne.length >= spiritDensity[1]) {
-          resolve(true)
-        }
-
-        const tierZero = spirits.filter(spirit => spirit.tier === 0)
-        if (tierZero.length >= spiritDensity[0]) {
+        if (tierOne.length >= spiritDensity[0]) {
           resolve(true)
         }
       }
@@ -70,12 +65,12 @@ module.exports = (latitude, longitude, spawnList) => {
         let spiritId = false
         const spawnTierRoll = Math.random()
 
-        for (let i = spiritRarityChance.length - 1; i >= 0; i--) {
+        for (let i = spiritTierChance.length - 1; i >= 0; i--) {
           if (spiritId) {
             break
           }
 
-          if (spawnTierRoll <= spiritRarityChance[i]) {
+          if (spawnTierRoll <= spiritTierChance[i]) {
             if (spawnList.spirits[i].length) {
               spiritId = await determineWildSpirit(
                 latitude,

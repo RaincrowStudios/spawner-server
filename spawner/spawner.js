@@ -1,4 +1,5 @@
 const getOneFromList = require('../redis/getOneFromList')
+const handleError = require('../utils/handleError')
 const getSpawnList = require('./components/getSpawnList')
 const spawnCollectible = require('./spawnCollectible')
 const spawnLocation = require('./spawnLocation')
@@ -26,7 +27,7 @@ async function spawner(message) {
     return true
   }
   catch (err) {
-    console.error(err)
+    handleError(err)
   }
 }
 
