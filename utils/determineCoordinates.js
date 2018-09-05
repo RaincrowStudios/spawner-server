@@ -6,7 +6,6 @@ function radiansToDegrees(radian) {
   return radian * (180/Math.PI)
 }
 
-
 module.exports = (longitudeDegree, latitudeDegree, distance, bearing) => {
   const earthRadius = 6371
   const latitude = degreeToRadians(latitudeDegree)

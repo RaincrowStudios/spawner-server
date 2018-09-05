@@ -24,7 +24,7 @@ module.exports = (latitude, longitude) => {
         resolve([true, nearLocations])
       }
 
-      resolve([false, false])
+      resolve([false, []])
     }
     catch (err) {
       reject(err)

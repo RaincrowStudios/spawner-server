@@ -14,7 +14,7 @@ const checkSpawnLocation = require('./components/checkSpawnLocation')
 const createLocation = require('./components/createLocation')
 
 const mbxGeocoding = require('@mapbox/mapbox-sdk/services/geocoding')
-const geocodingClient = mbxGeocoding({ accessToken: 'pk.eyJ1IjoicmFpbmNyb3dnYW1lcyIsImEiOiJxZDZRWERnIn0.EmZcgJhT80027oPahMqJLA' })
+const geocodingClient = mbxGeocoding({ accessToken: key.mapbox })
 
 module.exports = (latitude, longitude) => {
   return new Promise(async (resolve, reject) => {
@@ -22,9 +22,7 @@ module.exports = (latitude, longitude) => {
       const [shouldSpawn, nearLocationInstances] =
         await checkSpawnLocation(latitude, longitude)
 
-      if (
-        true //shouldSpawn
-      ) {
+      if (shouldSpawn) {
         const [locationSpawnMax, locationPriorityTypes, physicalOnlyChance] =
           await getEntriesFromList(
             'constants',
