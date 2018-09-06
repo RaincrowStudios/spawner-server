@@ -22,7 +22,10 @@ module.exports = (latitude, longitude) => {
       const [shouldSpawn, nearLocationInstances] =
         await checkSpawnLocation(latitude, longitude)
 
-      if (shouldSpawn) {
+      if (
+        true
+        //shouldSpawn
+      ) {
         const [locationSpawnMax, locationPriorityTypes, physicalOnlyChance] =
           await getEntriesFromList(
             'constants',
@@ -115,6 +118,8 @@ module.exports = (latitude, longitude) => {
           key.google
         )
         */
+
+        console.log(location)
 
         if (location) {
           const newLocation = createLocation(
