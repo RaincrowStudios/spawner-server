@@ -13,6 +13,7 @@ module.exports = (spiritId) => {
         instance: createInstanceId(),
         id: spiritTemplate.id,
         degree: spiritTemplate.wild.degree,
+        state: '',
         baseEnergy: determineWildSpiritEnergy(spiritTemplate),
         power: spiritTemplate.wild.power,
         focus: spiritTemplate.wild.focus,
