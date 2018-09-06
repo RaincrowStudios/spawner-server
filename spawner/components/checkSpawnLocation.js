@@ -11,7 +11,7 @@ module.exports = (latitude, longitude) => {
         )
 
       const [nearCharacters, nearLocations] = await Promise.all([
-        getNearbyFromGeohash('characters', latitude, longitude, radius),
+        getNearbyFromGeohash('creationPoints', latitude, longitude, radius),
         getNearbyFromGeohash('locations', latitude, longitude, radius)
       ])
 
