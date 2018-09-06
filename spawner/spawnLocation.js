@@ -22,7 +22,9 @@ module.exports = (latitude, longitude) => {
       const [shouldSpawn, nearLocationInstances] =
         await checkSpawnLocation(latitude, longitude)
 
-      if (shouldSpawn) {
+      if (true
+        //shouldSpawn
+      ) {
         const [locationSpawnMax, locationPriorityTypes, physicalOnlyChance] =
           await getEntriesFromList(
             'constants',
@@ -94,12 +96,13 @@ module.exports = (latitude, longitude) => {
             calls++
           }
 
-
-          if (midPriority.length) {
-            location = midPriority[Math.floor(Math.random() * midPriority.length)]
-          }
-          else if (lowPriority.length) {
-            location = lowPriority[Math.floor(Math.random() * lowPriority.length)]
+          if (!location) {
+            if (midPriority.length) {
+              location = midPriority[Math.floor(Math.random() * midPriority.length)]
+            }
+            else if (lowPriority.length) {
+              location = lowPriority[Math.floor(Math.random() * lowPriority.length)]
+            }
           }
 
         /* USING GOOGLE PLACES API
