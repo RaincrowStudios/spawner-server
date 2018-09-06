@@ -22,9 +22,7 @@ module.exports = (latitude, longitude) => {
       const [shouldSpawn, nearLocationInstances] =
         await checkSpawnLocation(latitude, longitude)
 
-      if (true
-        //shouldSpawn
-      ) {
+      if (shouldSpawn) {
         const [locationSpawnMax, locationPriorityTypes, physicalOnlyChance] =
           await getEntriesFromList(
             'constants',
