@@ -22,6 +22,7 @@ module.exports = (latitude, longitude) => {
       const [shouldSpawn, nearLocationInstances] =
         await checkSpawnLocation(latitude, longitude)
 
+      console.log(latitude, longitude)
       if (
         true
         //shouldSpawn
@@ -64,6 +65,7 @@ module.exports = (latitude, longitude) => {
             .send()
             .then(response => {
               results = response.body.features
+              console.log(results)
               return results
             })
 
