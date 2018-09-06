@@ -22,11 +22,7 @@ module.exports = (latitude, longitude) => {
       const [shouldSpawn, nearLocationInstances] =
         await checkSpawnLocation(latitude, longitude)
 
-      console.log(latitude, longitude)
-      if (
-        true
-        //shouldSpawn
-      ) {
+      if (shouldSpawn) {
         const [locationSpawnMax, locationPriorityTypes, physicalOnlyChance] =
           await getEntriesFromList(
             'constants',
@@ -49,6 +45,7 @@ module.exports = (latitude, longitude) => {
         const midPriority = []
         const lowPriority = []
         let queryCoords = [longitude, latitude]
+        let distance = 2
         let bearing = 0
         while (!location) {
           let results = []
@@ -65,7 +62,6 @@ module.exports = (latitude, longitude) => {
             .send()
             .then(response => {
               results = response.body.features
-              console.log(results)
               return results
             })
 
@@ -89,9 +85,9 @@ module.exports = (latitude, longitude) => {
             }
             else {
               queryCoords = determineCoordinates(
-                queryCoords[0],
-                queryCoords[1],
-                2,
+                longitude,
+                latitude,
+                distance,
                 bearing
               )
             }
@@ -120,8 +116,6 @@ module.exports = (latitude, longitude) => {
           key.google
         )
         */
-
-        console.log(location)
 
         if (location) {
           const newLocation = createLocation(
@@ -152,7 +146,7 @@ module.exports = (latitude, longitude) => {
               newLocation.latitude,
               newLocation.longitude,
               {
-                command: 'map_location_add',
+                command: 'map_token_add',
                 token: createMapToken(newLocation)
               }
             )
