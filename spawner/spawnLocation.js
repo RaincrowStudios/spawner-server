@@ -7,10 +7,14 @@ const informLogger = require('../utils/informLogger')
 const informNearbyPlayers = require('../utils/informNearbyPlayers')
 const checkSpawnLocation = require('./components/checkSpawnLocation')
 const determineLocation = require('./components/determineLocation')
+const handlePopulateLocation = require('./components/handlePopulateLocation')
 
 module.exports = (latitude, longitude) => {
   return new Promise(async (resolve, reject) => {
     try {
+      const update = []
+      const inform = []
+
       const [shouldSpawn, nearLocationInstances] =
         await checkSpawnLocation(latitude, longitude)
 
@@ -31,10 +35,7 @@ module.exports = (latitude, longitude) => {
         */
 
         if (location) {
-
-          //const spirit = createLocationSpirit(location)
-
-          await Promise.all([
+          update.push(
             addObjectToHash(location.instance, location),
             addToGeohash(
               'locations',
@@ -51,22 +52,41 @@ module.exports = (latitude, longitude) => {
                 location: location
               }
             ),
-            informNearbyPlayers(
-              location.latitude,
-              location.longitude,
-              {
-                command: 'map_token_add',
-                token: createMapToken(location)
-              }
-            )
-          ])
-          informLogger({
-            route: 'popCreation',
-            pop_id: location.instance,
-            latitude: location.latitude,
-            longitude: location.longitude,
-          })
+            informLogger({
+              route: 'popCreation',
+              pop_id: location.instance,
+              latitude: location.latitude,
+              longitude: location.longitude,
+            })
+          )
+
+          inform.push(
+            {
+              function: informNearbyPlayers,
+              parameters: [
+                location,
+                {
+                  command: 'map_token_add',
+                  token: createMapToken(location)
+                }
+              ]
+            }
+          )
+
+          for (let i = 1; i <= location.spiritSlots; i++) {
+            const [spiritUpdate, spiritInform] = handlePopulateLocation(location, i)
+            update.push(...spiritUpdate)
+            inform.push(...spiritInform)
+          }
+
         }
+      }
+
+      await Promise.all(update)
+
+      for (const informObject of inform) {
+        const informFunction = informObject.function
+        await informFunction(...informObject.parameters)
       }
 
       resolve(true)

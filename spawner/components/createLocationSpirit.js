@@ -1,37 +1,49 @@
 const getOneFromList = require('../../redis/getOneFromList')
 const createInstanceId = require('../../utils/createInstanceId')
-const determineWildSpiritEnergy = require('./determineWildSpiritEnergy')
 
-module.exports = (instance) => {
+module.exports = (location, position) => {
   return new Promise (async (resolve, reject) => {
     try {
       const currentTime = Date.now()
 
       const spiritTemplate = await getOneFromList('spirits', 'spirit_shade')
 
+      let baseEnergy
+  
+      if (spiritTemplate.energy.includes('-')) {
+        const [min, max] = spiritTemplate.energy.split('-')
+
+        baseEnergy = Math.floor(
+          Math.random() * (parseInt(max, 10) - parseInt(min, 10) + 1)
+        ) + parseInt(min, 10)
+      }
+      else {
+        baseEnergy = parseInt(spiritTemplate.energy, 10)
+      }
+
       const spirit = {
         instance: createInstanceId(),
         id: spiritTemplate.id,
-        degree: spiritTemplate.wild.degree,
-        baseEnergy: determineWildSpiritEnergy(spiritTemplate),
-        power: spiritTemplate.wild.power,
-        focus: spiritTemplate.wild.focus,
-        ward: spiritTemplate.wild.ward,
-        resilience: spiritTemplate.wild.resilience,
+        degree: spiritTemplate.degree,
+        baseEnergy: baseEnergy,
+        power: spiritTemplate.power,
+        focus: spiritTemplate.focus,
+        ward: spiritTemplate.ward,
+        resilience: spiritTemplate.resilience,
         type: spiritTemplate.type,
         tier: spiritTemplate.tier,
-        owner: instance,
-        ownerDisplay: '',
+        owner: location.instance,
+        ownerDisplay: location.displayName,
         coven: '',
         player: '',
         conditions: {},
-        carrying: [],
+        carrying: {},
         lastAttackedBy: '',
         lastHealedBy: '',
         previousTarget: '',
         createdOn: currentTime,
-        expiresOn: spiritTemplate.wild.duration > 0 ?
-          currentTime + (spiritTemplate.wild.duration * 3600000) : 0
+        expiresOn: 0,
+        position: position
       }
 
       spirit.energy = spirit.baseEnergy
