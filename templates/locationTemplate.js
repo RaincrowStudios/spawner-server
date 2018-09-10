@@ -10,5 +10,4 @@ module.exports = {
   slots: 9,
   occupants: {},
   spiritSlots: 3,
-  spirits: {}
 }
