@@ -26,7 +26,7 @@ module.exports = (spiritId) => {
         coven: '',
         player: '',
         conditions: {},
-        carrying: [],
+        carrying: {},
         lastAttackedBy: '',
         lastHealedBy: '',
         previousTarget: '',
