@@ -6,7 +6,7 @@ const informManager = require('../utils/informManager')
 const informLogger = require('../utils/informLogger')
 const informNearbyPlayers = require('../utils/informNearbyPlayers')
 const checkSpawnLocation = require('./components/checkSpawnLocation')
-const getPotentialSpawns = require('./components/getPotentialSpawns')
+const determineLocation = require('./components/determineLocation')
 
 module.exports = (latitude, longitude) => {
   return new Promise(async (resolve, reject) => {
@@ -15,7 +15,7 @@ module.exports = (latitude, longitude) => {
         await checkSpawnLocation(latitude, longitude)
 
       if (shouldSpawn) {
-        const location = await getPotentialSpawns(latitude, longitude, nearLocationInstances)
+        const location = await determineLocation(latitude, longitude, nearLocationInstances)
 
         /* USING GOOGLE PLACES API
         const nearby = await axios(
@@ -31,6 +31,9 @@ module.exports = (latitude, longitude) => {
         */
 
         if (location) {
+
+          //const spirit = createLocationSpirit(location)
+
           await Promise.all([
             addObjectToHash(location.instance, location),
             addToGeohash(

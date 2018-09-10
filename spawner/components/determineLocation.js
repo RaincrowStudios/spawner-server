@@ -1,7 +1,7 @@
 const key = require('../../keys/keys')
 const getEntriesFromList = require('../../redis/getEntriesFromList')
 const getOneFromHash = require('../../redis/getOneFromHash')
-const determineCoordinates = require('../../utils/determineCoordinates')
+const generateNewCoordinates = require('../../utils/generateNewCoordinates')
 const createLocation = require('./createLocation')
 
 const mbxGeocoding = require('@mapbox/mapbox-sdk/services/geocoding')
@@ -31,8 +31,8 @@ module.exports = (latitude, longitude, nearLocationInstances) => {
       const highPriority = []
       const midPriority = []
       const lowPriority = []
-      let queryCoords = [longitude, latitude]
-      let distance = 2
+      let queryCoords = [latitude, longitude]
+      let distance = 2000
       let bearing = 0
 
       while (!location) {
@@ -44,7 +44,7 @@ module.exports = (latitude, longitude, nearLocationInstances) => {
           let results = []
           await geocodingClient
             .reverseGeocode({
-              query: queryCoords,
+              query: [queryCoords[1], queryCoords[0]],
               limit: 5,
               types: ['poi.landmark']
             })
@@ -80,9 +80,10 @@ module.exports = (latitude, longitude, nearLocationInstances) => {
             break
           }
           else {
-            queryCoords = determineCoordinates(
-              longitude,
+            queryCoords = generateNewCoordinates(
               latitude,
+              longitude,
+              distance,
               distance,
               bearing
             )
@@ -106,7 +107,7 @@ module.exports = (latitude, longitude, nearLocationInstances) => {
         }
 
         bearing = 0
-        distance += 2
+        distance += 2000
       }
 
       if (location) {
