@@ -73,12 +73,8 @@ module.exports = (latitude, longitude) => {
             }
           )
 
-          for (let i = 1; i <= location.spiritSlots; i++) {
-            const [spiritUpdate, spiritInform] = handlePopulateLocation(location, i)
-            update.push(...spiritUpdate)
-            inform.push(...spiritInform)
-          }
-
+          const spiritUpdate = await handlePopulateLocation(location)
+          update.push(...spiritUpdate)
         }
       }
 
